@@ -102,14 +102,20 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
+    userToAdd.id = generateID();
     addUser(userToAdd);
-    res.send();
+    res.status(201).send(userToAdd);
 });
 
 app.delete("/users/:id", (req, res) => {
     const userId = req.params["id"];
-    deleteUser(userId);
-    res.send();
+
+    if(findUserById(id) === undefined){
+        res.status(404).send("Resource not found")
+    } else {
+        deleteUser(userId);
+        res.status(204).send();
+    }
 });
 
 app.listen(port, () => {
@@ -117,3 +123,21 @@ app.listen(port, () => {
     `Example app listening at http://localhost:${port}`
   );
 });
+
+//Generating ID 
+function generateID(){
+    let id = '';
+
+    for(let i = 0; i < 3; i++){
+        id += String.fromCharCode(
+            Math.floor(Math.random() * 26)
+            + 97
+        );
+    }
+
+    for(let i = 0; i < 3; i++){
+        id += Math.floor(Math.random() * 10);
+    }
+
+    return id;
+}
